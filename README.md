@@ -4,10 +4,22 @@
 | Matrícula | Nome |  
 |-----------------------|---------------------|  
 | 16/0124778 | Ian Rocha |  
-| 16/011202 | André Goretti |  
+| 16/0112028 | André Goretti |  
+
 ## Descrição do projeto
-Aqui você deve dizer o objetivo deste projeto e o que realmente foi feito neste repositório.
+O projeto feito por nós é uma implementação de árvore AVL mostrada de maneira intuitiva no próprio terminal.
 ## Guia de instalação
-Aqui devem estar descritas as dependências do projeto (versões de linguagens e ferramentas) e as instruções necessárias para executar o projeto. 
-### Dependências do projeto
-### Como executar o projeto  
+
+É recomendado o uso de python 3.6+ para utilizar esta aplicação
+Para baixar, execute os comandos a seguir:
+```
+sudo apt-get update
+
+sudo apt-get install python3.6
+```
+Com o python devidamente instalado em sua máquina, baixe ou clone este repositório, abra ele e execute o seguinte comando para executar o projeto:
+
+```
+python3 avl.py
+```
+
