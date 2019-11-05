@@ -1,20 +1,11 @@
-class AVLNode(object):
-    """A node in the AVL tree."""
- 
+class AVLNode(object): 
     def __init__(self, parent, k):
-        """Creates a node.
- 
-        Args:
-            parent: The node's parent.
-            k: key of the node.
-        """
         self.key = k
         self.parent = parent
         self.left = None
         self.right = None
  
     def _str(self):
-        """Internal method for ASCII art."""
         label = str(self.key)
         if self.left is None:
             left_lines, left_pos, left_width = [], 0, 0
@@ -48,15 +39,6 @@ class AVLNode(object):
         return '\n'.join(self._str()[0])
  
     def find(self, k):
-        """Finds and returns the node with key k from the subtree rooted at this 
-        node.
- 
-        Args:
-            k: The key of the node we want to find.
- 
-        Returns:
-            The node with key k.
-        """
         if k == self.key:
             return self
         elif k < self.key:
@@ -71,20 +53,12 @@ class AVLNode(object):
                 return self.right.find(k)
  
     def find_min(self):
-        """Finds the node with the minimum key in the subtree rooted at this 
-        node.
- 
-        Returns:
-            The node with the minimum key.
-        """
         current = self
         while current.left is not None:
             current = current.left
         return current
  
     def next_larger(self):
-        """Returns the node with the next larger key (the successor) in the BST.
-        """
         if self.right is not None:
             return self.right.find_min()
         current = self
@@ -93,11 +67,6 @@ class AVLNode(object):
         return current.parent
  
     def insert(self, node):
-        """Inserts a node into the subtree rooted at this node.
- 
-        Args:
-            node: The node to be inserted.
-        """
         if node is None:
             return
         if node.key < self.key:
@@ -114,7 +83,6 @@ class AVLNode(object):
                 self.right.insert(node)
  
     def delete(self):
-        """Deletes and returns this node from the tree."""
         if self.left is None or self.right is None:
             if self is self.parent.left:
                 self.parent.left = self.left or self.right
@@ -139,13 +107,8 @@ def height(node):
 def update_height(node):
     node.height = max(height(node.left), height(node.right)) + 1
  
-class AVL(object):
-    """
-    AVL binary search tree implementation.
-    """
- 
+class AVL(object): 
     def __init__(self):
-        """ empty tree """
         self.root = None
  
     def __str__(self):
@@ -153,32 +116,12 @@ class AVL(object):
         return str(self.root)
  
     def find(self, k):
-        """Finds and returns the node with key k from the subtree rooted at this 
-        node.
- 
-        Args:
-            k: The key of the node we want to find.
- 
-        Returns:
-            The node with key k or None if the tree is empty.
-        """
         return self.root and self.root.find(k)
  
-    def find_min(self):
-        """Returns the minimum node of this BST."""
- 
+    def find_min(self): 
         return self.root and self.root.find_min()
  
     def next_larger(self, k):
-        """Returns the node that contains the next larger (the successor) key in
-        the BST in relation to the node with key k.
- 
-        Args:
-            k: The key of the node of which the successor is to be found.
- 
-        Returns:
-            The successor node.
-        """
         node = self.find(k)
         return node and node.next_larger()   
  
@@ -236,12 +179,6 @@ class AVL(object):
             node = node.parent
  
     def insert(self, k):
-        """Inserts a node with key k into the subtree rooted at this node.
-        This AVL version guarantees the balance property: h = O(lg n).
- 
-        Args:
-            k: The key of the node to be inserted.
-        """
         node = AVLNode(None, k)
         if self.root is None:
             # The root's parent is None.
@@ -251,15 +188,6 @@ class AVL(object):
         self.rebalance(node)
  
     def delete(self, k):
-        """Deletes and returns a node with key k if it exists from the BST.
-        This AVL version guarantees the balance property: h = O(lg n).
- 
-        Args:
-            k: The key of the node that we want to delete.
- 
-        Returns:
-            The deleted node with key k.
-        """
         node = self.find(k)
         if node is None:
             return None
