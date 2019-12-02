@@ -1,3 +1,5 @@
+contD = 0
+contE = 0
 class AvlNo(object): 
     def __init__(self, pai, k):
         self.valor = k
@@ -82,22 +84,6 @@ class AvlNo(object):
             else:
                 self.direita.inserir(no)
  
-    # def delete(self):
-    #     if self.esquerda is None or self.direita is None:
-    #         if self is self.pai.esquerda:
-    #             self.pai.esquerda = self.esquerda or self.direita
-    #             if self.pai.esquerda is not None:
-    #                 self.pai.esquerda.pai = self.pai
-    #         else:
-    #             self.pai.direita = self.esquerda or self.direita
-    #             if self.pai.direita is not None:
-    #                 self.pai.direita.pai = self.pai
-    #         return self
-    #     else:
-    #         s = self.proxMaior()
-    #         self.valor, s.valor = s.valor, self.valor
-    #         return s.delete()
- 
 def altura(no):
     if no is None:
         return -1
@@ -126,6 +112,8 @@ class AVL(object):
         return no and no.proxMaior()   
  
     def rotacaoEsquerda(self, x):
+        global contE
+        contE += 1
         y = x.direita
         y.pai = x.pai
         if y.pai is None:
@@ -142,8 +130,10 @@ class AVL(object):
         x.pai = y
         atualizaAltura(x)
         atualizaAltura(y)
- 
+
     def rotacaoDireita(self, x):
+        global contD
+        contD += 1
         y = x.esquerda
         y.pai = x.pai
         if y.pai is None:
@@ -186,24 +176,6 @@ class AVL(object):
             self.raiz.inserir(no)
         self.balanceamento(no)
  
-    # def delete(self, k):
-    #     no = self.busca(k)
-    #     if no is None:
-    #         return None
-    #     if no is self.raiz:
-    #         pseudoraiz = AvlNo(None, 0)
-    #         pseudoraiz.esquerda = self.raiz
-    #         self.raiz.pai = pseudoraiz
-    #         deleted = self.raiz.delete()
-    #         self.raiz = pseudoraiz.esquerda
-    #         if self.raiz is not None:
-    #             self.raiz.pai = None
-    #     else:
-    #         deleted = no.delete()   
-    #     ## no.pai é o antigo pai do no,
-    #     ## que provavelmente é o primeiro nó desbalanceado.
-    #     self.balanceamento(deleted.pai)
- 
 def main(args=None):
     import random, sys, time
     if not args:
@@ -216,7 +188,6 @@ def main(args=None):
         itens = (random.randrange(100) for i in range(int(args[0])))
     else:
         itens = [int(i) for i in args]
-
     inicio = time.time()
     arvore = AVL()
     print(arvore)
@@ -227,6 +198,11 @@ def main(args=None):
     fim = time.time()
     decorrido = fim - inicio
 
-    print(decorrido)
+    global contD
+    global contE
+
+    print("Tempo necessário TOTAL para inserção e balanceamento:", decorrido, "segundos")
+    print("TOTAL de Rotações para Direita: ", contD)
+    print("TOTAL de Rotações para Esquerda: ", contE)
 
 if __name__ == '__main__': main()
