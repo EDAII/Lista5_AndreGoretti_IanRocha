@@ -192,6 +192,7 @@ def main(args=None):
     arvore = AVL()
     print(arvore)
     for item in itens:
+        print("Valor a ser inserido: ", item)
         arvore.inserir(item)
         print()
         print(arvore)
