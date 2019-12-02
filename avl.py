@@ -1,228 +1,232 @@
-class AVLNode(object): 
-    def __init__(self, parent, k):
-        self.key = k
-        self.parent = parent
-        self.left = None
-        self.right = None
+class AvlNo(object): 
+    def __init__(self, pai, k):
+        self.valor = k
+        self.pai = pai
+        self.esquerda = None
+        self.direita = None
  
     def _str(self):
-        label = str(self.key)
-        if self.left is None:
-            left_lines, left_pos, left_width = [], 0, 0
+        identificador = str(self.valor)
+        if self.esquerda is None:
+            esquerda_linhas, esquerda_pos, esquerda_largura = [], 0, 0
         else:
-            left_lines, left_pos, left_width = self.left._str()
-        if self.right is None:
-            right_lines, right_pos, right_width = [], 0, 0
+            esquerda_linhas, esquerda_pos, esquerda_largura = self.esquerda._str()
+        if self.direita is None:
+            direita_linhas, direita_pos, direita_largura = [], 0, 0
         else:
-            right_lines, right_pos, right_width = self.right._str()
-        middle = max(right_pos + left_width - left_pos + 1, len(label), 2)
-        pos = left_pos + middle // 2
-        width = left_pos + middle + right_width - right_pos
-        while len(left_lines) < len(right_lines):
-            left_lines.append(' ' * left_width)
-        while len(right_lines) < len(left_lines):
-            right_lines.append(' ' * right_width)
-        if (middle - len(label)) % 2 == 1 and self.parent is not None and \
-           self is self.parent.left and len(label) < middle:
-            label += '.'
-        label = label.center(middle, '.')
-        if label[0] == '.': label = ' ' + label[1:]
-        if label[-1] == '.': label = label[:-1] + ' '
-        lines = [' ' * left_pos + label + ' ' * (right_width - right_pos),
-                 ' ' * left_pos + '/' + ' ' * (middle-2) +
-                 '\\' + ' ' * (right_width - right_pos)] + \
-          [left_line + ' ' * (width - left_width - right_width) + right_line
-           for left_line, right_line in zip(left_lines, right_lines)]
-        return lines, pos, width
+            direita_linhas, direita_pos, direita_largura = self.direita._str()
+        meio = max(direita_pos + esquerda_largura - esquerda_pos + 1, len(identificador), 2)
+        pos = esquerda_pos + meio // 2
+        largura = esquerda_pos + meio + direita_largura - direita_pos
+        while len(esquerda_linhas) < len(direita_linhas):
+            esquerda_linhas.append(' ' * esquerda_largura)
+        while len(direita_linhas) < len(esquerda_linhas):
+            direita_linhas.append(' ' * direita_largura)
+        if (meio - len(identificador)) % 2 == 1 and self.pai is not None and \
+           self is self.pai.esquerda and len(identificador) < meio:
+            identificador += '.'
+        identificador = identificador.center(meio, '.')
+        if identificador[0] == '.': identificador = ' ' + identificador[1:]
+        if identificador[-1] == '.': identificador = identificador[:-1] + ' '
+        linhas = [' ' * esquerda_pos + identificador + ' ' * (direita_largura - direita_pos),
+                 ' ' * esquerda_pos + '/' + ' ' * (meio-2) +
+                 '\\' + ' ' * (direita_largura - direita_pos)] + \
+          [esquerda_linha + ' ' * (largura - esquerda_largura - direita_largura) + direita_linha
+           for esquerda_linha, direita_linha in zip(esquerda_linhas, direita_linhas)]
+        return linhas, pos, largura
  
     def __str__(self):
         return '\n'.join(self._str()[0])
  
-    def find(self, k):
-        if k == self.key:
+    def busca(self, k):
+        if k == self.valor:
             return self
-        elif k < self.key:
-            if self.left is None:
+        elif k < self.valor:
+            if self.esquerda is None:
                 return None
             else:
-                return self.left.find(k)
+                return self.esquerda.busca(k)
         else:
-            if self.right is None:  
+            if self.direita is None:  
                 return None
             else:
-                return self.right.find(k)
+                return self.direita.busca(k)
  
-    def find_min(self):
-        current = self
-        while current.left is not None:
-            current = current.left
-        return current
+    def buscaMin(self):
+        atual = self
+        while atual.esquerda is not None:
+            atual = atual.esquerda
+        return atual
  
-    def next_larger(self):
-        if self.right is not None:
-            return self.right.find_min()
-        current = self
-        while current.parent is not None and current is current.parent.right:
-            current = current.parent
-        return current.parent
+    def proxMaior(self):
+        if self.direita is not None:
+            return self.direita.buscaMin()
+        atual = self
+        while atual.pai is not None and atual is atual.pai.direita:
+            atual = atual.pai
+        return atual.pai
  
-    def insert(self, node):
-        if node is None:
+    def inserir(self, no):
+        if no is None:
             return
-        if node.key < self.key:
-            if self.left is None:
-                node.parent = self
-                self.left = node
+        if no.valor < self.valor:
+            if self.esquerda is None:
+                no.pai = self
+                self.esquerda = no
             else:
-                self.left.insert(node)
+                self.esquerda.inserir(no)
         else:
-            if self.right is None:
-                node.parent = self
-                self.right = node
+            if self.direita is None:
+                no.pai = self
+                self.direita = no
             else:
-                self.right.insert(node)
+                self.direita.inserir(no)
  
-    def delete(self):
-        if self.left is None or self.right is None:
-            if self is self.parent.left:
-                self.parent.left = self.left or self.right
-                if self.parent.left is not None:
-                    self.parent.left.parent = self.parent
-            else:
-                self.parent.right = self.left or self.right
-                if self.parent.right is not None:
-                    self.parent.right.parent = self.parent
-            return self
-        else:
-            s = self.next_larger()
-            self.key, s.key = s.key, self.key
-            return s.delete()
+    # def delete(self):
+    #     if self.esquerda is None or self.direita is None:
+    #         if self is self.pai.esquerda:
+    #             self.pai.esquerda = self.esquerda or self.direita
+    #             if self.pai.esquerda is not None:
+    #                 self.pai.esquerda.pai = self.pai
+    #         else:
+    #             self.pai.direita = self.esquerda or self.direita
+    #             if self.pai.direita is not None:
+    #                 self.pai.direita.pai = self.pai
+    #         return self
+    #     else:
+    #         s = self.proxMaior()
+    #         self.valor, s.valor = s.valor, self.valor
+    #         return s.delete()
  
-def height(node):
-    if node is None:
+def altura(no):
+    if no is None:
         return -1
     else:
-        return node.height
+        return no.altura
  
-def update_height(node):
-    node.height = max(height(node.left), height(node.right)) + 1
- 
-class AVL(object): 
+def atualizaAltura(no):
+    no.altura = max(altura(no.esquerda), altura(no.direita)) + 1
+
+class AVL(object):
     def __init__(self):
-        self.root = None
+        self.raiz = None
  
     def __str__(self):
-        if self.root is None: return '<empty tree>'
-        return str(self.root)
+        if self.raiz is None: return 'Árvore Vazia'
+        return str(self.raiz)
  
-    def find(self, k):
-        return self.root and self.root.find(k)
+    def busca(self, k):
+        return self.raiz and self.raiz.busca(k)
  
-    def find_min(self): 
-        return self.root and self.root.find_min()
+    def buscaMin(self): 
+        return self.raiz and self.raiz.buscaMin()
  
-    def next_larger(self, k):
-        node = self.find(k)
-        return node and node.next_larger()   
+    def proxMaior(self, k):
+        no = self.busca(k)
+        return no and no.proxMaior()   
  
-    def left_rotate(self, x):
-        y = x.right
-        y.parent = x.parent
-        if y.parent is None:
-            self.root = y
+    def rotacaoEsquerda(self, x):
+        y = x.direita
+        y.pai = x.pai
+        if y.pai is None:
+            self.raiz = y
         else:
-            if y.parent.left is x:
-                y.parent.left = y
-            elif y.parent.right is x:
-                y.parent.right = y
-        x.right = y.left
-        if x.right is not None:
-            x.right.parent = x
-        y.left = x
-        x.parent = y
-        update_height(x)
-        update_height(y)
+            if y.pai.esquerda is x:
+                y.pai.esquerda = y
+            elif y.pai.direita is x:
+                y.pai.direita = y
+        x.direita = y.esquerda
+        if x.direita is not None:
+            x.direita.pai = x
+        y.esquerda = x
+        x.pai = y
+        atualizaAltura(x)
+        atualizaAltura(y)
  
-    def right_rotate(self, x):
-        y = x.left
-        y.parent = x.parent
-        if y.parent is None:
-            self.root = y
+    def rotacaoDireita(self, x):
+        y = x.esquerda
+        y.pai = x.pai
+        if y.pai is None:
+            self.raiz = y
         else:
-            if y.parent.left is x:
-                y.parent.left = y
-            elif y.parent.right is x:
-                y.parent.right = y
-        x.left = y.right
-        if x.left is not None:
-            x.left.parent = x
-        y.right = x
-        x.parent = y
-        update_height(x)
-        update_height(y)
+            if y.pai.esquerda is x:
+                y.pai.esquerda = y
+            elif y.pai.direita is x:
+                y.pai.direita = y
+        x.esquerda = y.direita
+        if x.esquerda is not None:
+            x.esquerda.pai = x
+        y.direita = x
+        x.pai = y
+        atualizaAltura(x)
+        atualizaAltura(y)
  
-    def rebalance(self, node):
-        while node is not None:
-            update_height(node)
-            if height(node.left) >= 2 + height(node.right):
-                if height(node.left.left) >= height(node.left.right):
-                    self.right_rotate(node)
+    def balanceamento(self, no):
+        while no is not None:
+            atualizaAltura(no)
+            if altura(no.esquerda) >= 2 + altura(no.direita):
+                if altura(no.esquerda.esquerda) >= altura(no.esquerda.direita):
+                    self.rotacaoDireita(no)
                 else:
-                    self.left_rotate(node.left)
-                    self.right_rotate(node)
-            elif height(node.right) >= 2 + height(node.left):
-                if height(node.right.right) >= height(node.right.left):
-                    self.left_rotate(node)
+                    self.rotacaoEsquerda(no.esquerda)
+                    self.rotacaoDireita(no)
+            elif altura(no.direita) >= 2 + altura(no.esquerda):
+                if altura(no.direita.direita) >= altura(no.direita.esquerda):
+                    self.rotacaoEsquerda(no)
                 else:
-                    self.right_rotate(node.right)
-                    self.left_rotate(node)
-            node = node.parent
+                    self.rotacaoDireita(no.direita)
+                    self.rotacaoEsquerda(no)
+            no = no.pai
  
-    def insert(self, k):
-        node = AVLNode(None, k)
-        if self.root is None:
-            # The root's parent is None.
-            self.root = node
+    def inserir(self, k):
+        no = AvlNo(None, k)
+        if self.raiz is None:
+            self.raiz = no
         else:
-            self.root.insert(node)
-        self.rebalance(node)
+            self.raiz.inserir(no)
+        self.balanceamento(no)
  
-    def delete(self, k):
-        node = self.find(k)
-        if node is None:
-            return None
-        if node is self.root:
-            pseudoroot = AVLNode(None, 0)
-            pseudoroot.left = self.root
-            self.root.parent = pseudoroot
-            deleted = self.root.delete()
-            self.root = pseudoroot.left
-            if self.root is not None:
-                self.root.parent = None
-        else:
-            deleted = node.delete()   
-        ## node.parent is actually the old parent of the node,
-        ## which is the first potentially out-of-balance node.
-        self.rebalance(deleted.parent)
+    # def delete(self, k):
+    #     no = self.busca(k)
+    #     if no is None:
+    #         return None
+    #     if no is self.raiz:
+    #         pseudoraiz = AvlNo(None, 0)
+    #         pseudoraiz.esquerda = self.raiz
+    #         self.raiz.pai = pseudoraiz
+    #         deleted = self.raiz.delete()
+    #         self.raiz = pseudoraiz.esquerda
+    #         if self.raiz is not None:
+    #             self.raiz.pai = None
+    #     else:
+    #         deleted = no.delete()   
+    #     ## no.pai é o antigo pai do no,
+    #     ## que provavelmente é o primeiro nó desbalanceado.
+    #     self.balanceamento(deleted.pai)
  
-def test(args=None):
-    import random, sys
+def main(args=None):
+    import random, sys, time
     if not args:
         args = sys.argv[1:]
     if not args:
-        print('usage: %s <number-of-random-items | item item item ...>' % \
+        print('Modo de executar o programa: python3 %s [numero de nos aleatorios || nó nó nó nó...]' % \
               sys.argv[0])
         sys.exit()
     elif len(args) == 1:
-        items = (random.randrange(100) for i in range(int(args[0])))
+        itens = (random.randrange(100) for i in range(int(args[0])))
     else:
-        items = [int(i) for i in args]
- 
-    tree = AVL()
-    print(tree)
-    for item in items:
-        tree.insert(item)
+        itens = [int(i) for i in args]
+
+    inicio = time.time()
+    arvore = AVL()
+    print(arvore)
+    for item in itens:
+        arvore.inserir(item)
         print()
-        print(tree)
- 
-if __name__ == '__main__': test()
+        print(arvore)
+    fim = time.time()
+    decorrido = fim - inicio
+
+    print(decorrido)
+
+if __name__ == '__main__': main()
